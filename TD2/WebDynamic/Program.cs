@@ -1,10 +1,11 @@
-﻿using ConsoleApp3;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Text;
+using System.Web;
+using BasicWebServer;
 
 namespace BasicServerHTTPlistener
 {
@@ -13,22 +14,16 @@ namespace BasicServerHTTPlistener
         private static void Main(string[] args)
         {
 
-
+            //if HttpListener is not supported by the Framework
             if (!HttpListener.IsSupported)
             {
                 Console.WriteLine("A more recent Windows version is required to use the HttpListener class.");
                 return;
             }
-
+ 
+ 
             // Create a listener.
             HttpListener listener = new HttpListener();
-
-            // Trap Ctrl-C and exit 
-            Console.CancelKeyPress += delegate
-            {
-                listener.Stop();
-                System.Environment.Exit(0);
-            };
 
             // Add the prefixes.
             if (args.Length != 0)
@@ -48,10 +43,21 @@ namespace BasicServerHTTPlistener
                 Console.WriteLine("Syntax error: the call must contain at least one web server url as argument");
             }
             listener.Start();
+
+            // get args 
             foreach (string s in args)
             {
                 Console.WriteLine("Listening for connections on " + s);
             }
+
+            // Trap Ctrl-C on console to exit 
+            Console.CancelKeyPress += delegate {
+                // call methods to close socket and exit
+                listener.Stop();
+                listener.Close();
+                Environment.Exit(0);
+            };
+
 
             while (true)
             {
@@ -67,20 +73,76 @@ namespace BasicServerHTTPlistener
                         documentContents = readStream.ReadToEnd();
                     }
                 }
+                
+                // get url 
                 Console.WriteLine($"Received request for {request.Url}");
+
+                //get url protocol
+                Console.WriteLine(request.Url.Scheme);
+                //get user in url
+                Console.WriteLine(request.Url.UserInfo);
+                //get host in url
+                Console.WriteLine(request.Url.Host);
+                //get port in url
+                Console.WriteLine(request.Url.Port);
+                //get path in url 
+                Console.WriteLine(request.Url.LocalPath);
+
+                // parse path in url 
+                foreach (string str in request.Url.Segments)
+                {
+                    Console.WriteLine(str);
+                }
+
+                //get params un url. After ? and between &
+
+                Console.WriteLine(request.Url.Query);
+
+                //parse params in url
+                //Console.WriteLine("param1 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param1"));
+                //Console.WriteLine("param2 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param2"));
+                //Console.WriteLine("param3 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param3"));
+                //Console.WriteLine("param4 = " + HttpUtility.ParseQueryString(request.Url.Query).Get("param4"));
+
+                //
                 Console.WriteLine(documentContents);
 
                 // Obtain a response object.
                 HttpListenerResponse response = context.Response;
-                NameValueCollection headers = context.Request.Headers;
-
-                Header header = new Header(request.Headers);
-
-                Console.WriteLine(header);
-
 
                 // Construct a response.
+                Mymethods mymethods = new Mymethods();
+
+                //mymethods.callExe();
+
+                string str1 = (string) request.Url.Segments[request.Url.Segments.Length-1];
+
                 string responseString = "<HTML><BODY> Hello world!</BODY></HTML>";
+
+                if (str1 != "favicon.ico")
+                {
+                    if (str1 == "parseURL")
+                    {
+                        Type magicType = typeof(Mymethods);
+
+
+                        MethodInfo mymethod = magicType.GetMethod(str1);
+
+
+                        object[] parametersArray = new object[] { request };
+
+                        responseString = (string)mymethod.Invoke(mymethods, parametersArray);
+                    }
+                    else
+                    {
+                        responseString = mymethods.callExe();
+                    }
+                }
+
+                
+
+                
+
                 byte[] buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                 // Get a response stream and write the response to it.
                 response.ContentLength64 = buffer.Length;
@@ -89,7 +151,7 @@ namespace BasicServerHTTPlistener
                 // You must close the output stream.
                 output.Close();
             }
-            // Httplistener neither stop ...
+            // Httplistener neither stop ... But Ctrl-C do that ...
             // listener.Stop();
         }
     }

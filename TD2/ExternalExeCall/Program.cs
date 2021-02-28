@@ -26,6 +26,7 @@ class Program
             using (StreamReader reader = process.StandardOutput)
             {
                 string result = reader.ReadToEnd();
+                reader.Close();
                 Console.WriteLine(result);
                 Console.ReadLine();
             }
