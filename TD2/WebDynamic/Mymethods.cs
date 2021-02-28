@@ -14,6 +14,24 @@ namespace BasicWebServer
     class Mymethods
     {
         //HttpListenerRequest request;
+
+
+
+
+
+
+        // Les URLs utilisées pour Le TD2 sont les URLS Suivantes :
+
+        //Pour tester la méthode parseURL pour la question 4 du TD2 on utilise l'URL suivante : http://localhost:8080/cgi/parseURL?name=Ayoub&course=Eiin839
+
+        //Pour tester la méthode callExe pour la question 5 du TD2 on utilise l'URL suivante :http://localhost:8080/cgi/callExe?name=Ayoub&course=Eiin839
+
+
+
+
+
+
+
         public Mymethods()
         {
             

@@ -113,7 +113,16 @@ namespace BasicServerHTTPlistener
                 // Construct a response.
                 Mymethods mymethods = new Mymethods();
 
-                //mymethods.callExe();
+
+
+                // Les URLs utilisées pour Le TD2 sont les URLS Suivantes :
+
+                //Pour tester la méthode parseURL pour la question 4 du TD2 on utilise l'URL suivante : http://localhost:8080/cgi/parseURL?name=Ayoub&course=Eiin839
+
+                //Pour tester la méthode callExe pour la question 5 du TD2 on utilise l'URL suivante :http://localhost:8080/cgi/callExe?name=Ayoub&course=Eiin839
+
+
+
 
                 string str1 = (string) request.Url.Segments[request.Url.Segments.Length-1];
 
@@ -153,6 +162,15 @@ namespace BasicServerHTTPlistener
             }
             // Httplistener neither stop ... But Ctrl-C do that ...
             // listener.Stop();
+
+
+
+            // Les URLs utilisées pour Le TD2 sont les URLS Suivantes :
+
+            //Pour tester la méthode parseURL pour la question 4 du TD2 on utilise l'URL suivante : http://localhost:8080/cgi/parseURL?name=Ayoub&course=Eiin839
+
+            //Pour tester la méthode callExe pour la question 5 du TD2 on utilise l'URL suivante :http://localhost:8080/cgi/callExe?name=Ayoub&course=Eiin839
+
         }
     }
 }
